@@ -12,36 +12,36 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Date;
 
-//ÀÚ¹Ù ºó Å¬·¡½ºÀÇ Á¾·ù -> DAO ,VO¶Ç´Â DTO
+//ìë°” ë¹ˆ í´ë˜ìŠ¤ì˜ ì¢…ë¥˜ -> DAO ,VOë˜ëŠ” DTO
 
-//DAO Å¬·¡½ºÀÇ ¿ªÈ° : DB¿¡ ¿¬°áÇÏ¿© DBÀÛ¾÷ ÇÏ´Â Å¬·¡½º
+//DAO í´ë˜ìŠ¤ì˜ ì—­í™œ : DBì— ì—°ê²°í•˜ì—¬ DBì‘ì—… í•˜ëŠ” í´ë˜ìŠ¤ ì…ë‹ˆë‹¤.
 
 
 public class MemberDAO {
 
-	//DBÀÛ¾÷ °ü·Ã ÇÊ¿äÇÑ °´Ã¼¸¦ ÀúÀåÇÒ º¯¼ö ¼±¾ğ. ±×¹¹ ojdbc6.jar ÀÌ·±°ÅµµÀÖÀ½
+	//DBì‘ì—… ê´€ë ¨ í•„ìš”í•œ ê°ì²´ë¥¼ ì €ì¥í•  ë³€ìˆ˜ ì„ ì–¸. ê·¸ë­ ojdbc6.jar ì´ëŸ°ê±°ë„ìˆìŒ
 	private Connection con;
 	private PreparedStatement pstmt;
 	private DataSource ds;
 	
-	//Ä¿³Ø¼ÇÇÃ(DataSource)°´Ã¼¸¦ ¾ò´Â »ı¼ºÀÚ
+	//ì»¤ë„¥ì…˜í”Œ(DataSource)ê°ì²´ë¥¼ ì–»ëŠ” ìƒì„±ì
 	public MemberDAO(){
 		try{
-			//InitialContext °´Ã¼°¡ ÇÏ´Â ¿ªÈ°Àº ÅèÄ¹ ½ÇÇà½Ã  context.xml¿¡ ÀÇÇØ¤Ã »ı¼ºµÈ
-			//Context °´Ã¼¿¡ Á¢±ÙÀ» ÇÏ´Â ¿ªÇÒÀ»ÇÔ.
+			//InitialContext ê°ì²´ê°€ í•˜ëŠ” ì—­í™œì€ í†°ìº£ ì‹¤í–‰ì‹œ  context.xmlì— ì˜í•´ã…“ ìƒì„±ëœ
+			//Context ê°ì²´ì— ì ‘ê·¼ì„ í•˜ëŠ” ì—­í• ì„í•¨.
 			
 			Context ctx = new InitialContext();
 			
 			
-			//JDNI ¹æ¹ıÀ¸·Î Á¢±ÙÇÏ±â À§ÇØ ±âº»°æ·Î(java:/comp/env)¸¦ ÁöÁ¤ÇÕ´Ï´Ù.
-			//È¯¼³Á¤¿¡ °ü·ÃµÈ ÄÁÅØ½ºÆ® °´Ã¼¿¡ Á¢±ÙÇÏ±â À§ÇÑ ±âº» ÁÖ¼ÒÀÔ´Ï´Ù.
+			//JDNI ë°©ë²•ìœ¼ë¡œ ì ‘ê·¼í•˜ê¸° ìœ„í•´ ê¸°ë³¸ê²½ë¡œ(java:/comp/env)ë¥¼ ì§€ì •í•©ë‹ˆë‹¤.
+			//í™˜ì„¤ì •ì— ê´€ë ¨ëœ ì»¨í…ìŠ¤íŠ¸ ê°ì²´ì— ì ‘ê·¼í•˜ê¸° ìœ„í•œ ê¸°ë³¸ ì£¼ì†Œì…ë‹ˆë‹¤.
 			
 			Context envConText = (Context)ctx.lookup("java:/comp/env");
 			
-			/*Ä¿³Ø¼ÇÇÃ ÀÚ¿ø ¾ò±â*/
-			//±×·± ÈÄ ´Ù½ÃÅèÄÏÀº context.xml¿¡ ±× ¼³Á¤ÇÑ<Resource name = "jdbc/oracle"../>
-			//ÅÂ±×ÀÇ name ¼Ó¼º°ªÀÎ "jdbc/oracle¸¦ ÀÌ¿ëÇØ ÅèÄÏ¿¡ ¹Ì¸® DB¿¡ ¿¬°áÇØ³õÀº
-			//Datasource°´Ã¼(Ä¿³Ø¼ÇÇ® ¿ªÈ°À» ÇÏ´Â °´Ã¼)¸¦ ¹Ş¾Æ¿É´Ï´Ù.
+			/*ì»¤ë„¥ì…˜í”Œ ìì› ì–»ê¸°*/
+			//ê·¸ëŸ° í›„ ë‹¤ì‹œí†°ì¼“ì€ context.xmlì— ê·¸ ì„¤ì •í•œ<Resource name = "jdbc/oracle"../>
+			//íƒœê·¸ì˜ name ì†ì„±ê°’ì¸ "jdbc/oracleë¥¼ ì´ìš©í•´ í†°ì¼“ì— ë¯¸ë¦¬ DBì— ì—°ê²°í•´ë†“ì€
+			//Datasourceê°ì²´(ì»¤ë„¥ì…˜í’€ ì—­í™œì„ í•˜ëŠ” ê°ì²´)ë¥¼ ë°›ì•„ì˜µë‹ˆë‹¤.
 			ds=(DataSource)envConText.lookup("jdbc/oracle");
 			
 			
@@ -49,100 +49,100 @@ public class MemberDAO {
 			err.printStackTrace();
 		}
 		
-	}//»ı¼ºÀÚ ³¡
-	//DB¿¡ »õ È¸¿øÁ¤º¸¸¦ INSERT Ãß°¡ ½ÃÅ³ ¸Ş¼Òµå
-	//¸Å°³º¯¼ö·Î MemberBean °´Ã¼¸¦ Àü´Ş¹ŞÀº ÀÌÀ¯´Â?
-	// Insert¹®ÀåÀÇ ? ? ? ? ¿¡ ´ëÀÀµÇ´Â INSERTÇÒ °ªÀ» ¸¸µé±â À§ÇÔ;
+	}//ìƒì„±ì ë
+	//DBì— ìƒˆ íšŒì›ì •ë³´ë¥¼ INSERT ì¶”ê°€ ì‹œí‚¬ ë©”ì†Œë“œ
+	//ë§¤ê°œë³€ìˆ˜ë¡œ MemberBean ê°ì²´ë¥¼ ì „ë‹¬ë°›ì€ ì´ìœ ëŠ”?
+	// Insertë¬¸ì¥ì˜ ? ? ? ? ì— ëŒ€ì‘ë˜ëŠ” INSERTí•  ê°’ì„ ë§Œë“¤ê¸° ìœ„í•¨;
 	public void addMember(MemberVO memberBean){
 		try{
-			// Ä¿³Ø¼ÇÇ®(Datasource) °´Ã¼¾ÈÀÇ ¹Ì¸® DB¿¬°áÇÑ Á¤º¸¸¦ Áö´Ï°í ÀÖ´Â Connection °´Ã¼¸¦ ºô·Á¿È
+			// ì»¤ë„¥ì…˜í’€(Datasource) ê°ì²´ì•ˆì˜ ë¯¸ë¦¬ DBì—°ê²°í•œ ì •ë³´ë¥¼ ì§€ë‹ˆê³  ìˆëŠ” Connection ê°ì²´ë¥¼ ë¹Œë ¤ì˜´
 			con = ds.getConnection();
 			
-			//Insert¹®ÀåÀ» ¸¸µé±â À§ÇØ ¸Å°³º¯¼ö·Î Àü´Ş¹ŞÀº MemberBean°´Ã¼ÀÇ °¢º¯¼ö°ª ¸®ÅÏ ¹Ş±â
+			//Insertë¬¸ì¥ì„ ë§Œë“¤ê¸° ìœ„í•´ ë§¤ê°œë³€ìˆ˜ë¡œ ì „ë‹¬ë°›ì€ MemberBeanê°ì²´ì˜ ê°ë³€ìˆ˜ê°’ ë¦¬í„´ ë°›ê¸°
 			
 			String id = memberBean.getId();
 			String pwd = memberBean.getPwd();
 			String name = memberBean.getName();
 			String email = memberBean.getEmail();
 			
-			//insert¹®Àå¸¸µé±â
+			//insertë¬¸ì¥ë§Œë“¤ê¸°
 			String query = "insert into t_member(id,pwd,name,email)";
 				   query += "values(?,?,?,?)";
 				 
-			// OraclePreparedStatementWrapper ½ÇÇà°´Ã¼ <-- INSERT¹®ÀåÀ» DB¿¡ Àü¼ÛÇÏ¿© ½ÇÇà	   
-			// ? ±âÈ£¿¡ ´ëÀÀµÇ´Â ¼³Á¤°ªÀ» Á¦¿ÜÇÑ ³ª¸ÓÁö INSERT¹®ÀåÀ» ÀÓ½Ã·Î
-			// OraclePreparedStatementWrapper½ÇÇà °´Ã¼¿¡ ´ã¾Æ
-			// OraclePreparedStatementWrapper½ÇÇà°´Ã¼ ÀÚÃ¼¸¦ ¹İÈ¯¹Ş¾Æ ¾ò±â
+			// OraclePreparedStatementWrapper ì‹¤í–‰ê°ì²´ <-- INSERTë¬¸ì¥ì„ DBì— ì „ì†¡í•˜ì—¬ ì‹¤í–‰	   
+			// ? ê¸°í˜¸ì— ëŒ€ì‘ë˜ëŠ” ì„¤ì •ê°’ì„ ì œì™¸í•œ ë‚˜ë¨¸ì§€ INSERTë¬¸ì¥ì„ ì„ì‹œë¡œ
+			// OraclePreparedStatementWrapperì‹¤í–‰ ê°ì²´ì— ë‹´ì•„
+			// OraclePreparedStatementWrapperì‹¤í–‰ê°ì²´ ìì²´ë¥¼ ë°˜í™˜ë°›ì•„ ì–»ê¸°
 			pstmt = con.prepareStatement(query);
 			
-			// ?±âÈ£¿¡ ´ëÀÀµÇ´Â ¼³Á¤°ªÀ» ¿ì¸®°¡ ÀÔ·ÂÇÑ »õ È¸¿øÁ¤º¸ÀÇ °ªÀ¸·Î ¼³Á¤.
-			//OraclePreparedStatementWrapper ½ÇÇà°´Ã¼¿¡ ? 4°³ÀÇ °ªÀ» ¼³Á¤.
+			// ?ê¸°í˜¸ì— ëŒ€ì‘ë˜ëŠ” ì„¤ì •ê°’ì„ ìš°ë¦¬ê°€ ì…ë ¥í•œ ìƒˆ íšŒì›ì •ë³´ì˜ ê°’ìœ¼ë¡œ ì„¤ì •.
+			//OraclePreparedStatementWrapper ì‹¤í–‰ê°ì²´ì— ? 4ê°œì˜ ê°’ì„ ì„¤ì •.
 			pstmt.setString(1, id);
 			pstmt.setString(2, pwd);
 			pstmt.setString(3, name);
 			pstmt.setString(4, email);
 			
-			//OraclePreparedStatementWrapper ½ÇÇà°´Ã¼¸¦ ÀÌ¿ëÇÏ¿©
-			//DB Å×ÀÌºí¿¡ INSERT¹®ÀåÀ» ½ÇÇà
+			//OraclePreparedStatementWrapper ì‹¤í–‰ê°ì²´ë¥¼ ì´ìš©í•˜ì—¬
+			//DB í…Œì´ë¸”ì— INSERTë¬¸ì¥ì„ ì‹¤í–‰
 			pstmt.executeUpdate();
-			//»ç¿ëÀÚ¿ø ÇØÁ¦
+			//ì‚¬ìš©ìì› í•´ì œ
 			pstmt.close();
 			con.close();
 			
 		}catch(Exception err){
-			//ÀÌÅ¬¸³½ºÀÇ consoleÅÇ¿¡ ¿¹¿Ü ¸Ş¼¼Áö Ãâ·Â
+			//ì´í´ë¦½ìŠ¤ì˜ consoleíƒ­ì— ì˜ˆì™¸ ë©”ì„¸ì§€ ì¶œë ¥
 			err.printStackTrace();
 		}
-	}//addMember¸Ş¼Òµå ³¡
+	}//addMemberë©”ì†Œë“œ ë
 	
-	//DB¿¡ ÀúÀåµÇ¾î ÀÖ´Â ¸ğµç È¸¿øÁ¤º¸¸¦(Á¶È¸)°Ë»öÇÏ´Â ¸Ş¼Òµå
-	public ArrayList listMembers(){ //member.jsp¿¡¼­ È£ÃâÇÏ´Â ¸Ş¼Òµå
+	//DBì— ì €ì¥ë˜ì–´ ìˆëŠ” ëª¨ë“  íšŒì›ì •ë³´ë¥¼(ì¡°íšŒ)ê²€ìƒ‰í•˜ëŠ” ë©”ì†Œë“œ
+	public ArrayList listMembers(){ //member.jspì—ì„œ í˜¸ì¶œí•˜ëŠ” ë©”ì†Œë“œ
 		
-		//DB¿¡ ÀúÀåµÇ¾îÀÖ´Â ¸ğµç È¸¿øÁ¤º¸¸¦ ·¹ÄÚµå´ÜÀ§(ÇÑ¸íÀÇ È¸¿øÁ¤º¸´ÜÀ§)·Î °Ë»öÇØ¼­
-		//°¡Á®¿Â ÈÄ MemberBean°´Ã¼¿¡ °¢°¢ ÀúÀåÈÄ MemberBean°´Ã¼¹°À» °¢°¢ Ãß°¡ÇÏ¿© ÀúÀå½ÃÅ³ ArrayList¹è¿­ °´Ã¼ »ı¼º
+		//DBì— ì €ì¥ë˜ì–´ìˆëŠ” ëª¨ë“  íšŒì›ì •ë³´ë¥¼ ë ˆì½”ë“œë‹¨ìœ„(í•œëª…ì˜ íšŒì›ì •ë³´ë‹¨ìœ„)ë¡œ ê²€ìƒ‰í•´ì„œ
+		//ê°€ì ¸ì˜¨ í›„ MemberBeanê°ì²´ì— ê°ê° ì €ì¥í›„ MemberBeanê°ì²´ë¬¼ì„ ê°ê° ì¶”ê°€í•˜ì—¬ ì €ì¥ì‹œí‚¬ ArrayListë°°ì—´ ê°ì²´ ìƒì„±
 		
 		ArrayList<MemberVO> list = new ArrayList<MemberVO>();
 				
 		try {
-			//DB¿¬°á
-			//Ä¿³Ø¼ÇÇ®(Datasource)°´Ã¼¾ÈÀÇ ¹Ì¸® DB¿¬°áÇÑ Á¤º¸¸¦ Áö´Ï°íÀÖ´Â Connection°´Ã¼¸¦ ºô·Á¿È
+			//DBì—°ê²°
+			//ì»¤ë„¥ì…˜í’€(Datasource)ê°ì²´ì•ˆì˜ ë¯¸ë¦¬ DBì—°ê²°í•œ ì •ë³´ë¥¼ ì§€ë‹ˆê³ ìˆëŠ” Connectionê°ì²´ë¥¼ ë¹Œë ¤ì˜´
 			
 			con = ds.getConnection();
-			//SQL ¹® ¸¸µé±â : È¸¿øÁ¤º¸¸¦ ÃÖ±Ù °¡ÀÔÀÏ ¼øÀ¸·Î ³»¸²Â÷¼ø Á¤·ÄÇÏ¿© °Ë»öÇÒ SELECT¹® ¸¸µé±â
+			//SQL ë¬¸ ë§Œë“¤ê¸° : íšŒì›ì •ë³´ë¥¼ ìµœê·¼ ê°€ì…ì¼ ìˆœìœ¼ë¡œ ë‚´ë¦¼ì°¨ìˆœ ì •ë ¬í•˜ì—¬ ê²€ìƒ‰í•  SELECTë¬¸ ë§Œë“¤ê¸°
 			String query = "select * from t_member order by joinDate desc";
 			
-			//?±âÈ£¿¡  ´ëÀÀ µÇ´Â °ªÀ» Á¦¿ÜÇÑ  SELECT¹®ÀåÀ» ÀÓ½Ã·Î OraclePreparedStatementWrapper½ÇÇà°´Ã¼¿¡ ´ã¾Æ
-			//OraclePreparedStatementWrapper½ÇÇà°´Ã¼ ¿¡ ¹İÈ¯¹Ş±â <-- SELECT ¹®ÀåÀ» DB¿¡ Àü¼ÛÇÏ¿© ½ÇÇàÇÒ ¿ªÈ°
+			//?ê¸°í˜¸ì—  ëŒ€ì‘ ë˜ëŠ” ê°’ì„ ì œì™¸í•œ  SELECTë¬¸ì¥ì„ ì„ì‹œë¡œ OraclePreparedStatementWrapperì‹¤í–‰ê°ì²´ì— ë‹´ì•„
+			//OraclePreparedStatementWrapperì‹¤í–‰ê°ì²´ ì— ë°˜í™˜ë°›ê¸° <-- SELECT ë¬¸ì¥ì„ DBì— ì „ì†¡í•˜ì—¬ ì‹¤í–‰í•  ì—­í™œ
 			pstmt = con.prepareStatement(query);
 			
-			//À§ÀÇ query º¯¼ö¿¡ ÀúÀåµÈ select ¹®ÀåÀ» DB¿¡ Àü¼ÛÇÏ¿© °Ë»öÇÑ ±× °á°ú¸¦
-			//MemberDAO.javaÆäÀÌÁö·Î Àü´Ş¹Ş±â À§ÇØ¼­
-			//°Ë»ö°á°ú µ¥ÀÌÅÍµéÀ» TableÇü½ÄÀÇ ±¸Á¶·Î ÀúÀåÇÒ ÀÓ½Ã ÀúÀå¼Ò ¿ªÈ°À» ÇÏ´Â °´Ã¼°¡ ÇÊ¿äÇÏ´Ù.
-			// ±× °´Ã¼°¡ OracleResultSetImp °´Ã¼ÀÎ °ÍÀÌ´Ù.
-			// OracleResultSetImp °´Ã¼¿¡ °Ë»öÇÑ °á°ú µ¥ÀÌÅÍ¸¦ TableÇü½ÄÀÇ ±¸Á¶·Î ¶È°°ÀÌ ÀúÀåÇÏ¿©
-			// OracleResultSetImp °´Ã¼ÀÚÃ¼¸¦ ¸®ÅÏ¹Ş´Â´Ù.
+			//ìœ„ì˜ query ë³€ìˆ˜ì— ì €ì¥ëœ select ë¬¸ì¥ì„ DBì— ì „ì†¡í•˜ì—¬ ê²€ìƒ‰í•œ ê·¸ ê²°ê³¼ë¥¼
+			//MemberDAO.javaí˜ì´ì§€ë¡œ ì „ë‹¬ë°›ê¸° ìœ„í•´ì„œ
+			//ê²€ìƒ‰ê²°ê³¼ ë°ì´í„°ë“¤ì„ Tableí˜•ì‹ì˜ êµ¬ì¡°ë¡œ ì €ì¥í•  ì„ì‹œ ì €ì¥ì†Œ ì—­í™œì„ í•˜ëŠ” ê°ì²´ê°€ í•„ìš”í•˜ë‹¤.
+			// ê·¸ ê°ì²´ê°€ OracleResultSetImp ê°ì²´ì¸ ê²ƒì´ë‹¤.
+			// OracleResultSetImp ê°ì²´ì— ê²€ìƒ‰í•œ ê²°ê³¼ ë°ì´í„°ë¥¼ Tableí˜•ì‹ì˜ êµ¬ì¡°ë¡œ ë˜‘ê°™ì´ ì €ì¥í•˜ì—¬
+			// OracleResultSetImp ê°ì²´ìì²´ë¥¼ ë¦¬í„´ë°›ëŠ”ë‹¤.
 			
 			ResultSet rs = pstmt.executeQuery();
 			
-			//OracleResultSetImp °´Ã¼ÀÇ ±¸Á¶´Â TableÇü½ÄÀÇ ±¸Á¶·Î¼­
-			// Ã³À½¿¡´Â Ä¿¼­(È­»ìÇ¥:µ¥ÀÌÅÍ¸¦ °¡¸®Å°´Â ÁÙÀÚ)°¡ ÄÃ·³¸íÀÌ ÀÖ´Â ÁÙÀ» °¡¸®Å°°í ÀÖµû.
-			// rs.next()¸Ş¼Òµå¸¦ È£Ãâ ÇÏ¸é Ä¿¼­ À§Ä¡°¡ ÇÑÁÙ ¾Æ·¡·Î ³»·Á¿À¸é¼­
-			// ±×´ÙÀ½ ÁÙ¿¡ ·¹ÄÚµå°¡ Á¸ÀçÇÏ´ÂÁö µè±âµË´Ï´Ù.
-			// next() ¸Ş¼Òµå´Â ±×´ÙÀ½ ÁÙ¿¡ °Ë»öÇÑ ·¹ÄÚµå°¡ Á¸ÀçÇÏ¸é true°ªÀ» ¹İÈ¯ÇÏ°í 
-			// Á¸ÀçÇÏÁö ¾ÊÀ¸¸é false°ªÀ» ¹İÈ¯ÇÕ´Ï´ç.
+			//OracleResultSetImp ê°ì²´ì˜ êµ¬ì¡°ëŠ” Tableí˜•ì‹ì˜ êµ¬ì¡°ë¡œì„œ
+			// ì²˜ìŒì—ëŠ” ì»¤ì„œ(í™”ì‚´í‘œ:ë°ì´í„°ë¥¼ ê°€ë¦¬í‚¤ëŠ” ì¤„ì)ê°€ ì»¬ëŸ¼ëª…ì´ ìˆëŠ” ì¤„ì„ ê°€ë¦¬í‚¤ê³  ìˆë”°.
+			// rs.next()ë©”ì†Œë“œë¥¼ í˜¸ì¶œ í•˜ë©´ ì»¤ì„œ ìœ„ì¹˜ê°€ í•œì¤„ ì•„ë˜ë¡œ ë‚´ë ¤ì˜¤ë©´ì„œ
+			// ê·¸ë‹¤ìŒ ì¤„ì— ë ˆì½”ë“œê°€ ì¡´ì¬í•˜ëŠ”ì§€ ë“£ê¸°ë©ë‹ˆë‹¤.
+			// next() ë©”ì†Œë“œëŠ” ê·¸ë‹¤ìŒ ì¤„ì— ê²€ìƒ‰í•œ ë ˆì½”ë“œê°€ ì¡´ì¬í•˜ë©´ trueê°’ì„ ë°˜í™˜í•˜ê³  
+			// ì¡´ì¬í•˜ì§€ ì•Šìœ¼ë©´ falseê°’ì„ ë°˜í™˜í•©ë‹ˆë‹¹.
 			
 			
 			while(rs.next()){
 				
-				//¿À¶óÅ¬ DBÀÇ t_memberÅ×ÀÌºí¿¡¼­ °Ë»öÇÑ ·¹ÄÚµåÀÇ °¢ ÄÃ·³°ªÀ»
-				//OracleResultSetImp°´Ã¼¿¡¼­ ²¨³»¿Íº¯¼ö¿¡ ÀúÀå
+				//ì˜¤ë¼í´ DBì˜ t_memberí…Œì´ë¸”ì—ì„œ ê²€ìƒ‰í•œ ë ˆì½”ë“œì˜ ê° ì»¬ëŸ¼ê°’ì„
+				//OracleResultSetImpê°ì²´ì—ì„œ êº¼ë‚´ì™€ë³€ìˆ˜ì— ì €ì¥
 				String id= rs.getString("id");
 				String pwd= rs.getString("pwd");
 				String name= rs.getString("name");
 				String email= rs.getString("email");
 				Date joinDate = rs.getDate("joinDate");
 				
-				//°Ë»öÇÑ È¸¿øÁ¤º¸¸¦ MemberBean°´Ã¼ÀÇ °¢º¯¼ö¿¡ ÀúÀåÇÏ±â
+				//ê²€ìƒ‰í•œ íšŒì›ì •ë³´ë¥¼ MemberBeanê°ì²´ì˜ ê°ë³€ìˆ˜ì— ì €ì¥í•˜ê¸°
 				MemberVO vo = new MemberVO(id, pwd, name, email, joinDate);
 				/*vo.setId(id);
 				vo.setId(pwd);
@@ -151,11 +151,11 @@ public class MemberDAO {
 				vo.setJoinDate(joinDate);*/
 				
 				
-				//ArrayList¹è¿­¿¡ MemberBean°´Ã¼¸¦ Ãß°¡ÇÏ¿© ÀúÀå.
+				//ArrayListë°°ì—´ì— MemberBeanê°ì²´ë¥¼ ì¶”ê°€í•˜ì—¬ ì €ì¥.
 				list.add(vo);
 				
 				
-			}//while¹İº¹¹® ²ı
+			}//whileë°˜ë³µë¬¸ ë—
 			
 			
 			
@@ -165,20 +165,20 @@ public class MemberDAO {
 			err.printStackTrace();
 		}
 		
-		return list; // °Ë»öÇÑ È¸¿øÁ¤º¸µé(MemberBean °´Ã¼µé)À» ÀúÀåÇÏ°íÀÖ´Â ArrayList¹İÈ¯
+		return list; // ê²€ìƒ‰í•œ íšŒì›ì •ë³´ë“¤(MemberBean ê°ì²´ë“¤)ì„ ì €ì¥í•˜ê³ ìˆëŠ” ArrayListë°˜í™˜
 		
 		
-	}// listMembers ¸Ş¼Òµå ²ı
+	}// listMembers ë©”ì†Œë“œ ë—
 	
-	//È¸¿ø ID¸¦ ÀÌ¿ëÇØ È¸¿ø Á¤º¸ Á¶È¸
+	//íšŒì› IDë¥¼ ì´ìš©í•´ íšŒì› ì •ë³´ ì¡°íšŒ
 	public MemberVO findMember(String id) {
-		//Á¶È¸ÇÑ È¸¿ø Á¤º¸¸¦ ÀúÀåÇÒ MemberVOÅ¬·¡½º Å¸ÀÔÀÇ º¯¼ö ¼±¾ğ
+		//ì¡°íšŒí•œ íšŒì› ì •ë³´ë¥¼ ì €ì¥í•  MemberVOí´ë˜ìŠ¤ íƒ€ì…ì˜ ë³€ìˆ˜ ì„ ì–¸
 		MemberVO memInfo = null;
 		
 		try{
-			//Ä¿³Ø¼ÇÇ®·Î ºÎÅÍ Ä¿³Ø¼Ç ¾ò±â
+			//ì»¤ë„¥ì…˜í’€ë¡œ ë¶€í„° ì»¤ë„¥ì…˜ ì–»ê¸°
 			con = ds.getConnection();
-			//SQL ¹® ¸¸µé°í SQL ¹®À» ½ÇÇàÇÒ preparedStatement °´Ã¼ ¾ò±â
+			//SQL ë¬¸ ë§Œë“¤ê³  SQL ë¬¸ì„ ì‹¤í–‰í•  preparedStatement ê°ì²´ ì–»ê¸°
 			pstmt = con.prepareStatement("select * from t_member where id = ?");
 			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
@@ -188,7 +188,7 @@ public class MemberDAO {
 								   rs.getString("name"),
 								   rs.getString("email"), 
 								   rs.getDate("joinDate"));
-			//ÀÚ¿øÇØÁ¦
+			//ìì›í•´ì œ
 			rs.close();
 			pstmt.close();
 			con.close();
@@ -204,16 +204,16 @@ public class MemberDAO {
 		return memInfo;
 	}
 	
-	//¸Å°³º¯¼ö·Î Àü´Ş¹ŞÀº MemberVO°´Ã¼¸¦ ÀÌ¿ëÇÏ¿© È¸¿øÁ¤º¸ ¼öÁ¤Update
+	//ë§¤ê°œë³€ìˆ˜ë¡œ ì „ë‹¬ë°›ì€ MemberVOê°ì²´ë¥¼ ì´ìš©í•˜ì—¬ íšŒì›ì •ë³´ ìˆ˜ì •Update
 	public void modMember(MemberVO memberVO) {
-		//¼öÁ¤ÇÒ Á¤º¸¸¦ MemberVO¿¡¼­ ²¨³»¿À±â
+		//ìˆ˜ì •í•  ì •ë³´ë¥¼ MemberVOì—ì„œ êº¼ë‚´ì˜¤ê¸°
 		String id = memberVO.getId();
 		String pwd = memberVO.getPwd();
 		String name = memberVO.getName();
 		String email = memberVO.getEmail();
 		
 		try{
-			//Ä¿³Ø¼Ç Ç®·Î Ä¿³Ø¼Ç ¾ò±â
+			//ì»¤ë„¥ì…˜ í’€ë¡œ ì»¤ë„¥ì…˜ ì–»ê¸°
 			con = ds.getConnection();
 			con.prepareStatement("update t_member set pwd=?, name=?, email=? where id=?");
 			pstmt.setString(1, pwd);
@@ -221,7 +221,7 @@ public class MemberDAO {
 			pstmt.setString(3, email);
 			pstmt.setString(4, id);
 			pstmt.executeUpdate(); //UPDATE
-			//ÀÚ¿øÇØÁ¦
+			//ìì›í•´ì œ
 			pstmt.close();
 			con.close();
 		}catch(Exception e){
@@ -230,16 +230,16 @@ public class MemberDAO {
 		
 	}
 
-	//¸Å°³º¯¼ö·Î Àü´ŞµÈ »èÁ¦ÇÒ id¸¦ ÀÌ¿ëÇØ t_memberÅ×ÀÌºí¿¡ ÀúÀåµÈ È¸¿ø »èÁ¦
+	//ë§¤ê°œë³€ìˆ˜ë¡œ ì „ë‹¬ëœ ì‚­ì œí•  idë¥¼ ì´ìš©í•´ t_memberí…Œì´ë¸”ì— ì €ì¥ëœ íšŒì› ì‚­ì œ
 	public void delMember(String id){
 		try {
-			//Ä¿³Ø¼Ç Ç®·Î ºÎÅÍ Ä¿³Ø¼Ç ¾ò±â
+			//ì»¤ë„¥ì…˜ í’€ë¡œ ë¶€í„° ì»¤ë„¥ì…˜ ì–»ê¸°
 			con = ds.getConnection();
-			//Delete¹®Àå ¸¸µé±â
+			//Deleteë¬¸ì¥ ë§Œë“¤ê¸°
 			String query = "delete from t_member where id=?";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, id);
-			pstmt.executeUpdate(); //Delete ½ÇÇà
+			pstmt.executeUpdate(); //Delete ì‹¤í–‰
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -249,4 +249,4 @@ public class MemberDAO {
 	
 	
 	
-}//MemberDAO Å¬·¡½º ³¡
+}//MemberDAO í´ë˜ìŠ¤ ë
