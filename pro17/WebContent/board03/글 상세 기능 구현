@@ -1,0 +1,13 @@
+
+
+글 상세 기능 구현
+
+1. 글 목록창(listArticles.jsp)에서  글제목을 클릭했을때 컨트롤러에
+	/board/viewArticle.do?articleNO = 글번호로 요청합니다.
+	
+	
+2. 컨트롤러는 전송된 글 번호로 글 정보를 조회하여 글 상세 창(ViewArticle.jsp)이므로
+	포워딩(재요청) 합니다.	
+
+
+3. 글 상세창(viewArticle.jsp)에 검색된 글 정보와 이미지 파일을 표시합니다.
